@@ -146,6 +146,18 @@ Window compileToWindow(Frame* Frames, int* statusack, int ukuranWindow, int juml
   // W.Frames[1] = x;
 }
 
+void gantiStatusAck(Window *W, int posisi){
+  if (*W.statusack[posisi] == 0);{
+    *W.statusack[posisi] = 1;
+  }
+  else if (*W.statusack[posisi] == 1){
+    *W.statusack[posisi] = 0;
+  }
+  else{
+    printf("ACK AWAL SALAH\n");
+  }
+}
+
 int main(){
   Frame Frames[2];
   int statusack[2];

@@ -33,8 +33,7 @@ typedef struct{
 } Window;
 
 
-Window inisialisasiWindow();
 Window compileToWindow(Frame* frames, int* statusack, int ukuranWindow, int jumlahFrame);
-
+void gantiStatusAck(Window* W, int posisi);
 
 #endif
