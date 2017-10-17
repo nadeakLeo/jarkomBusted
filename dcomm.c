@@ -125,16 +125,15 @@ void decompileFrame(Frame f, char *data, int *seqNum, int *errCheck) {
 //   printf("%c\n", (char) 1050);
 // }
 
-Window compileToWindow(Frame* Frames, int* statusack, int ukuranWindow, int jumlahFrame){
+Window compileToWindow(Frame* Frames, int* statusack, int jumlahFrame){
   Window W;
   int i, sisaukuran;
   i = 0;
-  sisaukuran = jumlahFrame;
+  sisaukuran = jumlahFrame*9;
   W.jumlahFrame = 0;
   while((sisaukuran >= 0) && (i < jumlahFrame)){
     W.Frames[i] = Frames[i];
     W.statusack[i] = statusack[i];
-    W.ukuranWindow = ukuranWindow;
     W.jumlahFrame = W.jumlahFrame + 1;
     i++;
     sisaukuran = sisaukuran - 9;
@@ -146,12 +145,16 @@ Window compileToWindow(Frame* Frames, int* statusack, int ukuranWindow, int juml
   // W.Frames[1] = x;
 }
 
+int semuaACK(Window W){
+
+}
+
 void gantiStatusAck(Window *W, int posisi){
-  if (*W.statusack[posisi] == 0);{
-    *W.statusack[posisi] = 1;
+  if (W->statusack[posisi] == 0){
+    W->statusack[posisi] = 1;
   }
-  else if (*W.statusack[posisi] == 1){
-    *W.statusack[posisi] = 0;
+  else if (W->statusack[posisi] == 1){
+    W->statusack[posisi] = 0;
   }
   else{
     printf("ACK AWAL SALAH\n");
@@ -165,7 +168,7 @@ int main(){
   statusack[0] = 1;
 
   Window W;
-  W = compileToWindow(Frames, statusack, 2, 1);
+  W = compileToWindow(Frames, statusack, 2);
   printf("%d\n", W.statusack[0]);
   printf("%d\n", W.Frames[0].byte[0]);
   // decompileFrame(W.Frames[0]);
