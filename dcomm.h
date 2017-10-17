@@ -13,14 +13,27 @@
 #define ETX 3
 #define ACK 6
 
+#define MaxFramesWindow 4
 typedef unsigned char Byte;
 
 typedef struct {
   char byte[9];
 } Frame;
 
+typedef struct{
+	Frame Frames[MaxFramesWindow];
+	int statusack[MaxFramesWindow];
+	int ukuranWindow;
+	int jumlahFrame;
+} Window;
+
 int generateChecksum(char* string);
 int getIntLength(int i);
 Frame compileToFrame(char data, int seqNum);
+void decompileFrame(Frame f);
+
+Window inisialisasiWindow();
+Window compileToWindow(Frame* frames, int* statusack, int ukuranWindow, int jumlahFrame);
+
 
 #endif
