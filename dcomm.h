@@ -16,11 +16,12 @@
 typedef unsigned char Byte;
 
 typedef struct {
-  char byte[9];
+  char* byte;
 } Frame;
 
-int generateChecksum(char* string);
+int generateChecksum(Frame input);
 int getIntLength(int i);
 Frame compileToFrame(char data, int seqNum);
+void decompileFrame(Frame f, char *data, int *seqNum, int *errCheck);
 
 #endif

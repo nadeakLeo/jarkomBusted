@@ -4,8 +4,27 @@
 #include <string.h>
 #include <math.h>
 
-int generateChecksum (char* string){
+int generateChecksum (Frame input){
+  unsigned long long result = 0;
+  char* temp = input.byte;
 
+  unsigned long long gen = 0x131;
+  int i = 0;
+  do {
+    result = result << 8;
+    result += (unsigned long long) temp[i];
+    i++;
+  } while (temp[i] != ETX);
+
+  result = result << 8;
+
+  for (int i = sizeof(long long)*8; i > 8; i--) {
+    if ((result >> (i - 1)) & 1) {
+      result = result ^ (gen << (i - 9));
+    }
+  }
+
+  return (int) result;
 }
 
 int getIntLength(int x) {
@@ -20,51 +39,83 @@ int getIntLength(int x) {
 
 Frame compileToFrame(char data, int seqNum) {
   Frame fResult;
-  fResult.byte[0] = SOH;
-  // char num[getIntLength(seqNum)];
-  // for (int i = 4; i > getIntLength(seqNum); i--) {
-  //   fResult.byte[i] = 0;
-  // }
-  //
-  // sprintf(num, "%d", seqNum);
-  // for (int j = 1; j <= getIntLength(seqNum); j++) {
-  //   fResult.byte[j] = num[j-1];
-  // }
+  int numLength = getIntLength(seqNum);
+  int crcLength, idx = 0;
+  int size = 1 + numLength + 1 + /*Message Length*/1 + 1 + 1 + 1;
+  fResult.byte = (char*) malloc (size);
+  char num[numLength];
+  char* crc;
 
-  fResult.byte[5] = STX;
-  fResult.byte[6] = data;
-  fResult.byte[7] = ETX;
+  fResult.byte[idx] = SOH;
+  idx++;
 
+  sprintf(num, "%d", seqNum);
+  for (int j = idx; j <= numLength; j++) {
+    fResult.byte[j] = num[j-1];
+  }
+  idx = numLength+1;
+
+  fResult.byte[idx] = STX; idx++;
+  fResult.byte[idx] = data; idx++;
+  fResult.byte[idx] = ETX; idx++;
+
+  //sisanya checksum
+  int checksum = generateChecksum(fResult);
+  crcLength = getIntLength(checksum);
+  crc = (char*) malloc (crcLength);
+  sprintf(crc, "%d", checksum);
+
+  for (int i = 0; i < crcLength; i++) {
+    fResult.byte[idx] = crc[i];
+    idx++;
+  }
+
+  fResult.byte[idx] = '\0';
+
+  free(crc);
   return fResult;
 }
 
-void decompileFrame(Frame f) {
+void decompileFrame(Frame f, char *data, int *seqNum, int *errCheck) {
   if (f.byte[0] == SOH) {
-    int i = 1;
-    char num[4];
-    char msg;
+    int i = 1, numLength=0;
+    char* num, crc[33];
+    while(f.byte[i] != STX) {
+      numLength+=1;
+      i++;
+    }
+    i = 1;
+    num = (char *) malloc (numLength);
     while(f.byte[i] != STX) {
       num[i-1] = f.byte[i];
       i++;
     }
-
-    int seqNumber = atoi(num);
+    *seqNum = atoi(num);
     i++;
     while(f.byte[i] != ETX) {
-      msg = f.byte[i];
+      *data = f.byte[i];
       i++;
     }
-    printf("Sequence Number : %s\n", num);
-    printf("Data : %c\n", msg);
+    i++;
+    int n = 0;
+    while (f.byte[i] != '\0') {
+      crc[n] = f.byte[i];
+      i++; n++;
+    }
+
+    *errCheck = atoi(crc);
+
+    free(num);
+    // free(crc);
   } else {
     printf("[+] Error: Frame Corrupted\n");
   }
 }
 
-int main() {
-  Frame x;
-  x = compileToFrame('b', 105);
-  decompileFrame(x);
-
-  printf("%c\n", (char) 1050);
-}
+// int main() {
+//   Frame x;
+//   x = compileToFrame('z', 2105);
+//   decompileFrame(x);
+//
+//   // printf("%d\n", generateChecksum(x));
+// }

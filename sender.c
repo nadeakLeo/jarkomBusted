@@ -10,6 +10,7 @@
 void createFramesFromMessage();
 
 int main(int argc, char **argv) {
+  Frame F[100];
   if (argc != 2) {
     printf("Usage : %s <port> \n", argv[0]);
     exit(0);
@@ -35,39 +36,16 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-void createFramesFromMessage() {
+void createFramesFromMessage(Frame (*F)[100]) {
   FILE *f;
   int c, counter = 0, idx = 0;
-  char temp[6]; //Message length : 5
-  Frame F[10];
+  char temp[100]; //Message length : 5
   f = fopen("Message.txt","r");
 
   /* Membaca file */
   while ((c = fgetc(f)) != EOF) {
     temp[counter] = c;
     counter++;
-
-    if (counter == 5) {
-      temp[counter] = '\0';
-
-      for (int i = 0; i < 6; i++) {
-        F[idx].message[i] = temp[i];
-      }
-      F[idx].number = idx;
-
-      counter = 0;
-      idx++;
-    }
+    (*F)[counter] = compileToFrame(temp[counter], counter);
   }
-
-  /* End of Frame */
-  temp[0] = 26;
-
-  for (int i = 1; i < 6; i++) {
-    F[idx].message[i] = ' ';
-  }
-  F[idx].number = idx;
-  idx++;
-
-  printf("%s\n", F[idx-1].message);
 }
