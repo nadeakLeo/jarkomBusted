@@ -146,7 +146,14 @@ Window compileToWindow(Frame* Frames, int* statusack, int jumlahFrame){
 }
 
 int semuaACK(Window W){
-
+  int i, semua_ack;
+  semua_ack = 0;
+  for(i=0; i<W.jumlahFrame; i++){
+    if (W.statusack[i] != 1){
+      return 0;
+    }
+  }
+  return 1;
 }
 
 void gantiStatusAck(Window *W, int posisi){
@@ -168,9 +175,10 @@ int main(){
   statusack[0] = 1;
 
   Window W;
-  W = compileToWindow(Frames, statusack, 2);
+  W = compileToWindow(Frames, statusack, 1);
   printf("%d\n", W.statusack[0]);
   printf("%d\n", W.Frames[0].byte[0]);
+  printf("%d\n", semuaACK(W));
   // decompileFrame(W.Frames[0]);
   // printf("%d\n", W.Frames[0].byte[2]);
 }

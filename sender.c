@@ -29,9 +29,21 @@ int main(int argc, char **argv) {
   serverAddr.sin_port = htons(port);
   serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-  strcpy(buffer, "Hello Server\n");
+  // strcpy(buffer, "Hello Server\n");
+  // sendto(sockfd, buffer, 256, 0, (struct sockaddr*)&serverAddr, sizeof(serverAddr));  
+
+  Frame Frames[2];
+  int statusack[2];
+  Frames[0] = compileToFrame('b', 105);
+  statusack[0] = 1;
+
+  Window W;
+  W = compileToWindow(Frames, statusack, 1);
+  strcpy(buffer, W.Frames[0].byte[4]);
   sendto(sockfd, buffer, 256, 0, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
-  printf("[+] Data send: %s", buffer);
+
+  printf("W.Frames[0].byte[4] = %c\n", W.Frames[0].byte[4]);
+  printf("[+] Data send: %s\n", buffer);
   createFramesFromMessage();
   return 0;
 }

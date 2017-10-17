@@ -28,12 +28,12 @@ void decompileFrame(Frame f, char *data, int *seqNum, int *errCheck);
 typedef struct{
 	Frame Frames[MaxFramesWindow];
 	int statusack[MaxFramesWindow];
-	int ukuranWindow;
 	int jumlahFrame;
 } Window;
 
 
-Window compileToWindow(Frame* frames, int* statusack, int ukuranWindow, int jumlahFrame);
+Window compileToWindow(Frame* frames, int* statusack, int jumlahFrame);
+int semuaACK(Window W);
 void gantiStatusAck(Window* W, int posisi);
 
 #endif
