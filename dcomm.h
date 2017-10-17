@@ -36,4 +36,5 @@ Window inisialisasiWindow();
 Window compileToWindow(Frame* frames, int* statusack, int ukuranWindow, int jumlahFrame);
 
 
+
 #endif
