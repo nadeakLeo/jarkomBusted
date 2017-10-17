@@ -69,7 +69,7 @@ void decompileFrame(Frame f) {
 //   printf("%c\n", (char) 1050);
 // }
 
-Window inisialisasiWindow(Frame* Frames, int* statusack, int ukuranWindow, int jumlahFrame){
+Window compileToWindow(Frame* Frames, int* statusack, int ukuranWindow, int jumlahFrame){
   Window W;
   int i, sisaukuran;
   i = 0;
@@ -97,7 +97,7 @@ int main(){
   statusack[0] = 1;
 
   Window W;
-  W = inisialisasiWindow(Frames, statusack, 2, 1);
+  W = compileToWindow(Frames, statusack, 2, 1);
   printf("%d\n", W.statusack[0]);
   printf("%d\n", W.Frames[0].byte[0]);
   // decompileFrame(W.Frames[0]);
