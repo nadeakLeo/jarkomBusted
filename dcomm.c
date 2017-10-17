@@ -119,3 +119,43 @@ void decompileFrame(Frame f, char *data, int *seqNum, int *errCheck) {
 //
 //   // printf("%d\n", generateChecksum(x));
 // }
+//   x = compileToFrame('b', 105);
+//   decompileFrame(x);
+
+//   printf("%c\n", (char) 1050);
+// }
+
+Window compileToWindow(Frame* Frames, int* statusack, int ukuranWindow, int jumlahFrame){
+  Window W;
+  int i, sisaukuran;
+  i = 0;
+  sisaukuran = jumlahFrame;
+  W.jumlahFrame = 0;
+  while((sisaukuran >= 0) && (i < jumlahFrame)){
+    W.Frames[i] = Frames[i];
+    W.statusack[i] = statusack[i];
+    W.ukuranWindow = ukuranWindow;
+    W.jumlahFrame = W.jumlahFrame + 1;
+    i++;
+    sisaukuran = sisaukuran - 9;
+  }
+  return W;
+
+  // Frame x;
+  // x = compileToFrame('b', 105);
+  // W.Frames[1] = x;
+}
+
+int main(){
+  Frame Frames[2];
+  int statusack[2];
+  Frames[0] = compileToFrame('b', 105);
+  statusack[0] = 1;
+
+  Window W;
+  W = compileToWindow(Frames, statusack, 2, 1);
+  printf("%d\n", W.statusack[0]);
+  printf("%d\n", W.Frames[0].byte[0]);
+  // decompileFrame(W.Frames[0]);
+  // printf("%d\n", W.Frames[0].byte[2]);
+}
