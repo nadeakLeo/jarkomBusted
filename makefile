@@ -1,8 +1,8 @@
 all :
-		make src/sendfile src/recvfile
+		make sendfile recvfile
 
-src/sendfile : src/sender.cpp src/bit.cpp src/bit.h src/dcomm.h
-		g++ -pthread -o data/sendfile src/sender.cpp src/bit.cpp
+sendfile : src/sender.cpp src/bit.cpp src/bit.h src/dcomm.h
+		g++ -pthread -o sendfile src/sender.cpp src/bit.cpp
 
-src/recvfile : src/receiver.cpp src/bit.cpp src/bit.h src/dcomm.h
-		g++ -pthread -o data/recvfile src/bit.cpp src/receiver.cpp
+recvfile : src/receiver.cpp src/bit.cpp src/bit.h src/dcomm.h
+		g++ -pthread -o recvfile src/bit.cpp src/receiver.cpp

@@ -5,8 +5,8 @@ Untuk menggunakan program ini caranya adalah dengan mengetikkan command:
 make
 
 Kemudian menjalankan kedua command berikut pada proses yang berbeda :
-./data/recvfile <filename> <windowsize> <buffersize> <port>
-./data/sendfile data/<filename> <windowsize> <buffersize> <destination_port>
+./recvfile <filename> <windowsize> <buffersize> <port>
+./sendfile data/<filename> <windowsize> <buffersize> <destination_port>
 
 
 ## Cara kerja Sliding Window
