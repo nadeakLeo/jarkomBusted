@@ -33,10 +33,10 @@ using namespace std;
 typedef unsigned char Byte;
 
 typedef struct {
-  unsigned int count;
-  unsigned int front;
-  unsigned int rear;
-  unsigned int maxsize;
+  int count;
+  int front;
+  int rear;
+  int maxsize;
   Byte *data;
 } QTYPE;
 
