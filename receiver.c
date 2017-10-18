@@ -5,6 +5,9 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <fstream>
+#include <string>
+
 
 int main(int argc, char **argv) {
   if (argc != 2) {
@@ -30,6 +33,9 @@ int main(int argc, char **argv) {
   addr_size = sizeof(si_other);
   recvfrom(sockfd, buffer, 256, 0, (struct sockaddr*)&si_other, &addr_size);
   printf("[+] Data received : %s", buffer);
+  ofstream out("received.txt");
+  out << buffer;
+  out.close();
 
   return 0;
 }
