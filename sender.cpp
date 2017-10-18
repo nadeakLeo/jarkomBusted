@@ -66,8 +66,8 @@ void slideWindow(SendWindow *window) {
 #define MAXTRANSBUFF 10
 struct sockaddr_in receiver_addr;
 int sockfd, slen = sizeof(receiver_addr);
-Byte buffer[MAXTRANSBUFF], lastReceivedChar;
-bool ack[MAXTRANSBUFF];
+Byte *buffer, lastReceivedChar;
+bool *ack;
 clock_t startTime[MAXTRANSBUFF];
 SendWindow window = {0,0,0, MAXTRANSBUFF, buffer, ack, startTime};
 
@@ -120,14 +120,18 @@ void* receiveMessage (void*) {
 
 /* MAIN PROGRAM */
 int main(int argc, char **argv) {
-  if(argc < 4){
-		cout<<"Wrong number of arguments, should receive 3 arguments\n"<<endl;
-		cout<<"./transmitter [ipAddress] [portNo] [TextFile]"<<endl;
+  if(argc < 6){
+		cout<<"Wrong number of arguments, should receive 4 arguments\n"<<endl;
+		cout<<"./transmitter <filename> <windowsize> <buffersize> <destination_ip> <destination_port>"<<endl;
 		exit(EXIT_FAILURE);
 	}
 
-  char *ip = argv[1], *file = argv[3];
-  int port = atoi(argv[2]);
+  char *ip = argv[4], *file = argv[1];
+  int port = atoi(argv[5]);
+  int windowSize = atoi(argv[2]), bufferSize = atoi(argv[3]);
+  buffer = new Byte[bufferSize];
+  ack = new bool[bufferSize];
+  window = {0,0,0, windowSize, buffer, ack, startTime};
 
   sockfd = socket(PF_INET, SOCK_DGRAM, 0);
 

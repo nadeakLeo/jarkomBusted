@@ -40,11 +40,11 @@ bool isCheckSumCorrect(Message input) {
 }
 
 bool isFrameValid(Message input) {
-  // return (input.soh == SOH &&
-  //         input.seqNum < MAXRECVBUFF &&
-  //         input.stx == STX &&
-  //         input.etx == ETX &&
-          return(isCheckSumCorrect(input));
+  return (input.soh == SOH &&
+          input.seqNum < MAXRECVBUFF &&
+          input.stx == STX &&
+          input.etx == ETX &&
+          isCheckSumCorrect(input));
 }
 
 void shrinkWindow(RecvWindow* window) {
@@ -64,7 +64,7 @@ void insertIntoProcess(Byte data, QTYPE *queue, int sockfd, struct sockaddr_in s
 
 #define RECEIVEBUFFSIZE 8
 
-Byte rcvBuff[RECEIVEBUFFSIZE];
+Byte *rcvBuff;
 QTYPE rcvq = {0,0,0,RECEIVEBUFFSIZE,rcvBuff};
 QTYPE *rxq = &rcvq;
 bool send_xoff = false;
@@ -73,8 +73,8 @@ struct sockaddr_in receiver_addr, sender_addr;
 int sockfd, byteCounter = 0, byteConsumed = 0, slen = sizeof(sender_addr);
 int port;
 
-Byte buffer[MAXRECVBUFF];
-bool received[MAXRECVBUFF];
+Byte *buffer;
+bool *received;
 RecvWindow window = {0, MAXRECVBUFF/2 - 1, MAXRECVBUFF, buffer, received};
 
 static Byte q_get(QTYPE *queue) {
@@ -103,14 +103,24 @@ void* getBufferData(void*) {
 }
 
 int main(int argc, char **argv) {
-  if(argc < 2){
+  if(argc < 5){
 		cout<<"Wrong number of arguments, should receive 1 argument"<<endl;
-		cout<<"./receiver [port]"<<endl;
+		cout<<"./receiver <filename> <windowsize> <buffersize> <port>"<<endl;
 		exit(EXIT_FAILURE);
 	}
 
 	Byte c;
-	port = atoi(argv[1]);
+	port = atoi(argv[4]);
+  int windowSize = atoi(argv[2]);
+  int bufferSize = atoi(argv[3]);
+
+  rcvBuff = new Byte[windowSize];
+  rcvq = {0,0,0,windowSize,rcvBuff};
+  rxq = &rcvq;
+  buffer = new Byte[bufferSize];
+  received = new bool[bufferSize];
+
+  window = {0, bufferSize/2 - 1, bufferSize, buffer, received};
 
 	sockfd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
