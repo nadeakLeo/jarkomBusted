@@ -1,4 +1,6 @@
 #include "bit.h"
+#include <fstream>
+#include <string>
 
 #define MAXRECVBUFF 10
 
@@ -141,6 +143,7 @@ int main(int argc, char **argv) {
 	}
 
 	// sliding window protocol
+  string finalmssg("");
 	Message message;
     while(true){
 	    if(recvfrom(sockfd, &message, sizeof(Message), 0,
@@ -154,7 +157,7 @@ int main(int argc, char **argv) {
 	    	int seqNum = message.seqNum;
 	    	Byte data = message.data;
 	    	window.data[seqNum] = data;
-
+        finalmssg = finalmssg + (char)data;
 	    	sendACK(ACK, sockfd, sender_addr, slen, seqNum, message.checksum);
 	    	if(data != Endfile){
           cout << "Frame with sequence number : " << seqNum << " received (Data received : " << data << ")" << endl;
@@ -182,6 +185,10 @@ int main(int argc, char **argv) {
 	while(rxq->count!=0){
 		//Do Nothing
 	}
+  ofstream out("received.txt");
+  out << finalmssg;
+
+  out.close();
 
   return 0;
 }
