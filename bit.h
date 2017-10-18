@@ -4,7 +4,5 @@
 #include "dcomm.h"
 
 string makeCRC(string bit);
-string getBitString(Message input);
-Byte getCheckSum(Message input);
 
 #endif

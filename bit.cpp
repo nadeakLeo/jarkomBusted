@@ -3,17 +3,6 @@
 
 using namespace std;
 
-string getBitString(Message input) {
-  string result = "";
-  result += bitset<8>(input.soh).to_string();
-  result += bitset<8>(input.seqNum).to_string();
-  result += bitset<8>(input.stx).to_string();
-  result += bitset<8>(input.data).to_string();
-  result += bitset<8>(input.etx).to_string();
-
-  return result;
-}
-
 string makeCRC(string bitString) {
   static char result[8];
   char crc[7], invert;
@@ -41,10 +30,4 @@ string makeCRC(string bitString) {
   result[7] = 0;
 
   return result;
-}
-
-Byte getCheckSum(Message input) {
-  string chkSumBit = makeCRC(getBitString(input));
-
-  return ((Byte) bitset<8>(chkSumBit).to_ulong());
 }

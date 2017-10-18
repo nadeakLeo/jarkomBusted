@@ -18,6 +18,23 @@ typedef struct {
 } SendWindow;
 
 /* FUNCTION AND PROCEDURE */
+string getBitString(Message input) {
+  string result = "";
+  result += bitset<8>(input.soh).to_string();
+  result += bitset<8>(input.seqNum).to_string();
+  result += bitset<8>(input.stx).to_string();
+  result += bitset<8>(input.data).to_string();
+  result += bitset<8>(input.etx).to_string();
+
+  return result;
+}
+
+Byte getCheckSum(Message input) {
+  string chkSumBit = makeCRC(getBitString(input));
+
+  return ((Byte) bitset<8>(chkSumBit).to_ulong());
+}
+
 void addQueueWindow(Byte data, SendWindow *window) {
   int rear = window->rear;
   window->data[rear] = data;
@@ -43,7 +60,7 @@ void sendMessage(Byte msgno, Byte data, int sockfd, struct sockaddr_in receiver_
 
 void slideWindow(SendWindow *window) {
   window->front = (window->front + 1) % window->maxsize;
-  window->count;
+  window->count--;
 }
 
 #define MAXTRANSBUFF 10

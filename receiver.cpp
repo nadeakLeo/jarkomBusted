@@ -11,6 +11,17 @@ typedef struct {
   Byte *data;
   bool *received;
 } RecvWindow;
+string getBitString(Message input) {
+  string result = "";
+  result += bitset<8>(input.soh).to_string();
+  result += bitset<8>(input.seqNum).to_string();
+  result += bitset<8>(input.stx).to_string();
+  result += bitset<8>(input.data).to_string();
+  result += bitset<8>(input.etx).to_string();
+  result += bitset<7>(input.checksum).to_string();
+
+  return result;
+}
 
 void sendACK(Byte ack, int sockfd, struct sockaddr_in sender_addr, int slen, int seqNum, int checksum) {
   Response resp;
@@ -66,7 +77,7 @@ Byte buffer[MAXRECVBUFF];
 bool received[MAXRECVBUFF];
 RecvWindow window = {0, MAXRECVBUFF/2 - 1, MAXRECVBUFF, buffer, received};
 
-Byte q_get(QTYPE *queue) {
+static Byte q_get(QTYPE *queue) {
   Byte *current;
 
   if (!queue->count) return '\0';
@@ -75,9 +86,15 @@ Byte q_get(QTYPE *queue) {
   queue->front %= queue->maxsize;
   queue->count--;
 
+  	if(c != Endfile){
+  		printf("Data get %d: '%c'\n",++byteConsumed, c);
+  	}
+
   return c;
 }
+
 #define DELAY 5
+
 void* getBufferData(void*) {
   while(true) {
     q_get(rxq);
@@ -130,7 +147,7 @@ int main(int argc, char **argv) {
 
 	    	sendACK(ACK, sockfd, sender_addr, slen, seqNum, message.checksum);
 	    	if(data != Endfile){
-          cout << "Frame with sequence number : " << seqNum << " received (Data received : )" << data << ")" << endl;
+          cout << "Frame with sequence number : " << seqNum << " received (Data received : " << data << ")" << endl;
 		    	window.received[seqNum] = true;
 	    	}
 		    else
