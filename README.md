@@ -3,31 +3,10 @@
 ## Petunjuk Penggunaan Program
 Untuk menggunakan program ini caranya adalah dengan mengetikkan command:
 make
-makefile berisi command:
-output: receiver transmitter
-	./receiver Message1.txt 4 10 8080 & PIDIOS=$!
-	./transmitter Message.txt 4 10 127.0.0.1 8080 & PIDMIX=$!
-	wait $PIDIOS
-	wait $PIDMIX
-receiver:
-	g++ -pthread -o receiver bit.cpp receiver.cpp
-transmitter: 
-	g++ -pthread -o transmitter bit.cpp sender.cpp
-clean:
-	rm receiver transmitter
-all :
-		make src/sendfile src/recvfile
 
-src/sendfile : src/sender.cpp src/bit.cpp src/bit.h src/dcomm.h
-		g++ -pthread -o data/sendfile src/sender.cpp src/bit.cpp
-
-src/recvfile : src/receiver.cpp src/bit.cpp src/bit.h src/dcomm.h
-		g++ -pthread -o data/recvfile src/bit.cpp src/receiver.cpp
-
-		./receiver Message1.txt 4 10 8080 & PIDIOS=$!
-		./transmitter Message.txt 4 10 127.0.0.1 8080 & PIDMIX=$!
-		wait $PIDIOS
-		wait $PIDMIX
+Kemudian menjalankan kedua command berikut pada proses yang berbeda :
+./data/recvfile <filename> <windowsize> <buffersize> <port>
+./data/sendfile data/<filename> <windowsize> <buffersize> <destination_port>
 
 
 ## Cara kerja Sliding Window
@@ -70,7 +49,7 @@ Membuat struktur data Window dan membuat laporan
 
 **data offset** untuk menyimpan total ukuran TCP header
 
-**reserved** selalu berisi nilai 0, untuk membuat jumlah ukuran TCP header selalu kelipatan 4 
+**reserved** selalu berisi nilai 0, untuk membuat jumlah ukuran TCP header selalu kelipatan 4
 
 **control flags** untuk mengatur aliran data
 

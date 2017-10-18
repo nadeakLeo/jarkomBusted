@@ -1,6 +1,7 @@
 #include "bit.h"
 #include <fstream>
-#include <string>
+#include <string.h>
+
 
 #define MAXRECVBUFF 10
 
@@ -112,6 +113,7 @@ int main(int argc, char **argv) {
 	}
 
 	Byte c;
+  char *file = argv[1];
 	port = atoi(argv[4]);
   int windowSize = atoi(argv[2]);
   int bufferSize = atoi(argv[3]);
@@ -185,7 +187,8 @@ int main(int argc, char **argv) {
 	while(rxq->count!=0){
 		//Do Nothing
 	}
-  ofstream out("received.txt");
+  char *dest;
+  ofstream out(file);
   out << finalmssg;
 
   out.close();
