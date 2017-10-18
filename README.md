@@ -6,6 +6,7 @@ make
 
 Kemudian menjalankan kedua command berikut pada proses yang berbeda :
 ./recvfile <filename> <windowsize> <buffersize> <port>
+   
 ./sendfile data/<filename> <windowsize> <buffersize> <destination_port>
 
 
